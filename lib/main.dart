@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:news_1am/modules/home/pages/home_screen.dart';
-import 'package:news_1am/modules/home/pages/tabs_screen.dart';
-
 import 'modules/splahs/splash_screen.dart';
 
 void main() {
@@ -15,18 +13,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'News 1PM',
-      theme: ThemeData(
-        useMaterial3: false,
-      ),
-      // home: TabsScreen(),
-      routes: {
-        SplashScreen.routeName : (_)=> SplashScreen(),
-        HomeScreen.routeName : (_)=> HomeScreen(),
-      },
-      initialRoute: SplashScreen.routeName
-      //   ,
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'News 1PM',
+        theme: ThemeData(
+          useMaterial3: false,
+        ),
+        // home: TabsScreen(),
+        routes: {
+          SplashScreen.routeName: (_) => SplashScreen(),
+          HomeScreen.routeName: (_) => HomeScreen(),
+        },
+        initialRoute: SplashScreen.routeName
+        //   ,
+        );
   }
 }

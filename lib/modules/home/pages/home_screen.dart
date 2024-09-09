@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:news_1am/models/category_data.dart';
+import 'package:news_1am/core/base.dart';
+import 'package:news_1am/modules/home/manager/home_connector.dart';
 import 'package:news_1am/modules/home/pages/tabs_screen.dart';
-import 'package:news_1am/modules/home/widgets/category_widget.dart';
-
+import 'package:news_1am/modules/home/manager/home_view_model.dart';
+import 'package:provider/provider.dart';
 import '../../../core/widgets/custom_bg.dart';
 import '../widgets/custom_list_tile_widget.dart';
 import 'category_screen.dart';
@@ -16,71 +17,83 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  CategoryData? categoryData;
+class _HomeScreenState extends BaseView<HomeScreen, HomeViewModel>
+    implements HomeConnector {
+  @override
+  void initState() {
+    super.initState();
+    viewModel.connector = this;
+  }
 
   @override
   Widget build(BuildContext context) {
     return CustomBgWidget(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.green,
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-          ),
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-            bottomRight: Radius.circular(50),
-            bottomLeft: Radius.circular(50),
-          )),
-          centerTitle: true,
-          title: Text(categoryData == null ? "News App" : categoryData!.title),
-        ),
-        drawer: Drawer(
-          child: Column(
-            children: [
-              const DrawerHeader(
-                  decoration: BoxDecoration(color: Colors.green),
-                  child: Center(
-                    child: Text(
-                      "News App!",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                          color: Colors.white),
-                    ),
-                  )),
-              CustomTextTileWidget(
-                onTap: () {
-                  categoryData = null;
-                  setState(() {});
-                  Navigator.pop(context);
-                },
-                title: "Categories",
-                icon: Icons.menu,
+      child: ChangeNotifierProvider(
+        create: (context) => viewModel,
+        builder: (context, child) {
+          Provider.of<HomeViewModel>(context);
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.green,
+              systemOverlayStyle: const SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
               ),
-              CustomTextTileWidget(
-                onTap: () {},
-                title: "Settings",
-                icon: Icons.settings,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(50),
+                bottomLeft: Radius.circular(50),
+              )),
+              centerTitle: true,
+              title: Text(viewModel.categoryData == null
+                  ? "News App"
+                  : viewModel.categoryData!.title),
+            ),
+            drawer: Drawer(
+              child: Column(
+                children: [
+                  const DrawerHeader(
+                      decoration: BoxDecoration(color: Colors.green),
+                      child: Center(
+                        child: Text(
+                          "News App!",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                              color: Colors.white),
+                        ),
+                      )),
+                  CustomTextTileWidget(
+                    onTap: () {
+                      viewModel.resetData();
+                      Navigator.pop(context);
+                    },
+                    title: "Categories",
+                    icon: Icons.menu,
+                  ),
+                  CustomTextTileWidget(
+                    onTap: () {},
+                    title: "Settings",
+                    icon: Icons.settings,
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-        body: categoryData == null
-            ? CategoryScreen(onTap: onTapCategory)
-            : TabsScreen(
-                catId: categoryData!.id,
-              ),
+            ),
+            body: viewModel.categoryData == null
+                ? CategoryScreen(onTap: viewModel.onTapCategory)
+                : TabsScreen(
+                    viewModel: viewModel,
+                  ),
+          );
+        },
       ),
     );
   }
 
-  onTapCategory(cat) {
-    categoryData = cat;
-    setState(() {});
+  @override
+  HomeViewModel initViewModel() {
+    return HomeViewModel();
   }
 }
 
