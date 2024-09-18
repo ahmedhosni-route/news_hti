@@ -1,10 +1,12 @@
 class SourcesModel {
   SourcesModel({
       this.status, 
+      this.message,
       this.sources,});
 
   SourcesModel.fromJson(dynamic json) {
     status = json['status'];
+    message = json['message'];
     if (json['sources'] != null) {
       sources = [];
       json['sources'].forEach((v) {
@@ -13,6 +15,7 @@ class SourcesModel {
     }
   }
   String? status;
+  String? message;
   List<Sources>? sources;
 
   Map<String, dynamic> toJson() {

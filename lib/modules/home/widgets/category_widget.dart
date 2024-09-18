@@ -26,7 +26,10 @@ class CategoryWidget extends StatelessWidget {
           )),
       child: Column(
         children: [
-          Image.asset("assets/${category.image}"),
+          Image.asset(
+            "assets/${category.image}",
+            height: 120,
+          ),
           const Spacer(),
           Text(
             category.title,
